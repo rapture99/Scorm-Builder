@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0d1219;
+  --color-rail: #121a23;
+  --color-panel: #18212c;
+  --color-panel2: #1e2833;
+  --color-line: #28343f;
+  --color-line2: #334252;
+  --color-teal: #3194a0;
+  --color-tealbr: #4bbecb;
+  --color-mut: #8697a6;
+  --color-dim: #5f6f7e;
+  --color-ok: #39b3a2;
+  --color-bad: #e0687a;
+  --color-amber: #e0a44a;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink text-[#e7eef4] font-sans text-sm antialiased overflow-hidden;
+}
+
+/* mono eyebrow label used across panes */
+.lbl {
+  @apply font-mono text-[10.5px] tracking-[1.6px] uppercase text-mut;
+}
+
+/* rich-text body preview (Canvas) — mirror the exported player's .body-txt rules,
+   which Tailwind's preflight would otherwise flatten */
+.body-preview p { margin: 0 0 10px; }
+.body-preview h2, .body-preview h3, .body-preview h4 { margin: 0 0 8px; font-weight: 650; color: #e7eef4; }
+.body-preview h2 { font-size: 18px; }
+.body-preview h3 { font-size: 15.5px; }
+.body-preview h4 { font-size: 14px; }
+.body-preview ul, .body-preview ol { margin: 0 0 10px; padding-left: 22px; }
+.body-preview ul { list-style: disc; }
+.body-preview ol { list-style: decimal; }
+.body-preview li { margin: 0 0 3px; }
+.body-preview a { color: var(--color-tealbr); text-decoration: underline; }

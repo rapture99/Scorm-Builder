@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>__COURSE_TITLE__</title>
+<style>
+  :root{--bg:#0e151d;--panel:#18212c;--panel-2:#1f2a37;--line:#2c3947;--line-2:#3a4b5c;
+    --teal:#3194A0;--teal-br:#4bbecb;--text:#e7eef4;--muted:#8a99a8;--dim:#5f6f7e;
+    --ok:#39b3a2;--no:#e0687a;--amber:#e0a44a;
+    --on-accent:#04222a;--on-ok:#04231e;--on-no:#2a0a10;--body-col:#cdd8e2;--box-line:#47586a;
+    --pdot:#31404f;--top-bg:rgba(14,21,29,.94);--nav-bg:rgba(20,27,36,.96);
+    --veil:rgba(6,10,14,.74);--lb-bg:rgba(4,8,12,.92);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .top{position:sticky;top:0;z-index:20;background:var(--top-bg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .top-in{max-width:820px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px}
+  .mk{width:26px;height:26px;flex:0 0 auto}
+  .ct{font-weight:620;letter-spacing:-.1px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .conn{font-family:var(--mono);font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+  .dot.live{background:var(--ok)}.dot.prev{background:var(--amber)}
+  .wrap{max-width:820px;margin:0 auto;padding:26px 20px 120px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+  h1.page-h{font-size:24px;font-weight:660;margin:0 0 18px;letter-spacing:-.2px}
+  .body-txt{color:var(--body-col);margin:0 0 18px}
+  .body-txt p{margin:0 0 12px}
+  .body-txt h2,.body-txt h3,.body-txt h4{margin:0 0 10px;letter-spacing:-.2px;color:var(--text)}
+  .body-txt h2{font-size:20px}.body-txt h3{font-size:17px}.body-txt h4{font-size:15px}
+  .body-txt ul,.body-txt ol{margin:0 0 12px;padding-left:22px}
+  .body-txt li{margin:0 0 4px}
+  .body-txt a{color:var(--teal-br)}
+  /* video hero: an 80vw × 80vh stage centered in the viewport, breaking out of the text column */
+  .vid-hero{position:relative;left:50%;transform:translateX(-50%);width:80vw;display:flex;justify-content:center;margin-bottom:10px}
+  .vid-hero video{width:100%;height:80vh;object-fit:contain;border-radius:9px;background:#000;border:1px solid var(--line);display:block}
+  @media (max-width:820px){.vid-hero{width:100%;left:0;transform:none}.vid-hero video{height:auto;width:100%;max-height:80vh}}
+  .watched{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:flex;gap:8px;align-items:center;margin-bottom:18px}
+  .watched.done{color:var(--ok)}
+  audio{display:block;width:100%;margin:0 0 8px}
+  .doc{display:block;width:100%;height:70vh;border:1px solid var(--line);border-radius:9px;background:#fff;margin:0 0 8px}
+  .doc-row{margin:0 0 18px}
+  .doc-link{font-family:var(--mono);font-size:11.5px;color:var(--teal-br)}
+  .chart{width:100%;border:0;background:none;padding:0;cursor:zoom-in;display:block;margin-bottom:8px}
+  .chart img{width:100%;border-radius:9px;border:1px solid var(--line);display:block}
+  .chart-cap{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--muted);margin-bottom:18px}
+  .blk{margin:0 0 18px}
+  .blk-body{color:var(--body-col);font-size:14px}
+  .blk-body p{margin:0 0 10px}.blk-body ul,.blk-body ol{margin:0 0 10px;padding-left:20px}.blk-body a{color:var(--teal-br)}
+  .acc-it{border:1px solid var(--line);border-radius:9px;background:var(--panel);margin:0 0 8px;overflow:hidden}
+  .acc-h{margin:0;font-size:14px}
+  .acc-btn{display:flex;width:100%;gap:10px;align-items:center;justify-content:space-between;border:0;background:none;color:var(--text);font:inherit;font-weight:560;padding:12px 14px;cursor:pointer;text-align:left}
+  .acc-ic{color:var(--teal);font-family:var(--mono);transition:transform .12s}
+  .acc-btn[aria-expanded="true"] .acc-ic{transform:rotate(45deg)}
+  .acc-p{padding:10px 14px 4px;border-top:1px solid var(--line)}
+  .tab-bar{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:0 0 12px}
+  .tab-btn{border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);font:inherit;font-weight:560;padding:8px 12px;cursor:pointer}
+  .tab-btn[aria-selected="true"]{color:var(--teal-br);border-bottom-color:var(--teal)}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  .card-f{min-height:110px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit;padding:14px;cursor:pointer;display:grid;place-items:center;text-align:center}
+  .card-f[aria-pressed="true"]{border-color:var(--teal);background:var(--panel-2)}
+  .card-hint{display:block;margin-top:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  .rev-btn{border:1px solid var(--teal);background:none;color:var(--teal-br);font:inherit;font-weight:560;border-radius:8px;padding:10px 16px;cursor:pointer}
+  .rev-p{border-left:3px solid var(--teal);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 14px 4px;margin-top:10px}
+  .tl{border-left:2px solid var(--line-2);padding-left:18px;margin-left:6px}
+  .tl-it{position:relative;padding:0 0 16px}
+  .tl-it::before{content:"";position:absolute;left:-24px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--teal)}
+  .tl-lab{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal)}
+  .tl-t{margin:2px 0 6px;font-size:15px;font-weight:620}
+  .hs-fig{position:relative}
+  .hs-fig img{width:100%;border-radius:9px;border:1px solid var(--line);display:block}
+  .hs-dot{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;border:2px solid #fff;background:var(--teal);color:var(--on-accent);font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.45)}
+  .hs-dot[aria-expanded="true"]{background:var(--teal-br)}
+  .hs-panel{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:12px 14px 4px;margin-top:10px}
+  .hs-t{margin:0 0 6px;font-size:14px;font-weight:620}
+  .acc-btn:focus-visible,.tab-btn:focus-visible,.card-f:focus-visible,.rev-btn:focus-visible,.hs-dot:focus-visible{outline:2px solid var(--teal-br);outline-offset:2px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 6px;margin:0 0 14px}
+  .q-top{display:flex;gap:11px;margin-bottom:11px}
+  .q-idx{font-family:var(--mono);font-size:12px;color:var(--teal);flex:0 0 auto;min-width:32px;padding-top:2px}
+  .q-text{font-weight:520}
+  .q-note{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:-5px 0 10px 43px}
+  .opts{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .opt input{position:absolute;opacity:0;width:1px;height:1px}
+  .opt label{display:flex;gap:11px;align-items:flex-start;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:11px 13px;transition:border-color .12s,background .12s}
+  .opt label:hover{border-color:var(--line-2)}
+  .opt .box{flex:0 0 auto;width:20px;height:20px;border-radius:5px;border:1.5px solid var(--box-line);display:grid;place-items:center;margin-top:1px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .opt input:focus-visible + label{outline:2px solid var(--teal-br);outline-offset:2px}
+  .opt input:checked + label{border-color:var(--teal);background:rgba(49,148,160,.14)}
+  .opt input:checked + label .box{border-color:var(--teal);background:var(--teal);color:var(--on-accent)}
+  .q.rev label{cursor:default}
+  .q.rev .opt.correct label{border-color:var(--ok);background:rgba(57,179,162,.13)}
+  .q.rev .opt.correct .box{border-color:var(--ok);background:var(--ok);color:var(--on-ok)}
+  .q.rev .opt.wrong label{border-color:var(--no);background:rgba(224,104,122,.12)}
+  .q.rev .opt.wrong .box{border-color:var(--no);background:var(--no);color:var(--on-no)}
+  .verdict{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 0 12px;display:none}
+  .q.rev .verdict{display:block}.q.rev.right .verdict{color:var(--ok)}.q.rev.bad .verdict{color:var(--no)}
+  .tin{display:block;width:100%;max-width:340px;margin:0 0 12px 43px;padding:10px 12px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--text);font-family:var(--sans);font-size:14px}
+  .tin:focus{outline:2px solid var(--teal-br);outline-offset:1px}
+  .mrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 8px 43px}
+  .mleft{min-width:130px;font-weight:520}
+  .msel{flex:1;min-width:150px;padding:9px 10px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--text);font-family:var(--sans);font-size:13.5px}
+  .q.rev .mrow.ok .msel{border-color:var(--ok)}
+  .q.rev .mrow.bad .msel{border-color:var(--no)}
+  .mans{flex-basis:100%;font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--ok);margin:2px 0 4px}
+  .srow{display:flex;gap:11px;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:9px 13px;margin:0 0 8px 43px}
+  .snum{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:16px}
+  .stxt{flex:1}
+  .sbtn{border:1px solid var(--line-2);background:var(--panel);color:var(--text);border-radius:6px;width:30px;height:26px;cursor:pointer;font-size:11px}
+  .sbtn:disabled{opacity:.3;cursor:default}
+  .q.rev .srow.ok{border-color:var(--ok);background:rgba(57,179,162,.13)}
+  .q.rev .srow.bad{border-color:var(--no);background:rgba(224,104,122,.12)}
+  .sans{font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--ok);margin:2px 0 12px 43px}
+  .fb{display:none;font-size:13.5px;color:var(--body-col);background:var(--panel-2);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:9px 12px;margin:0 0 12px}
+  .q.rev .fb{display:block}
+  .qsum{display:flex;flex-wrap:wrap;gap:6px;padding:12px 0 2px}
+  .chip{border:1px solid var(--line-2);background:var(--panel-2);border-radius:6px;padding:5px 9px;font-family:var(--mono);font-size:11px;color:var(--text);cursor:pointer}
+  .chip.ok{border-color:rgba(57,179,162,.5);color:var(--ok)}
+  .chip.bad{border-color:rgba(224,104,122,.5);color:var(--no)}
+  .navbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--nav-bg);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .navbar-in{max-width:820px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+  .dots{flex:1;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+  .pdot{width:9px;height:9px;border-radius:50%;background:var(--pdot);border:0;padding:0;cursor:pointer}
+  .pdot.on{background:var(--teal-br)}.pdot.done{background:var(--teal)}
+  .pdot:disabled{opacity:.45;cursor:not-allowed}
+  .nbtn{border:1px solid var(--line-2);background:var(--panel-2);color:var(--text);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:560;font-family:var(--sans)}
+  .nbtn:hover{border-color:var(--teal)}
+  .nbtn:disabled{opacity:.35;cursor:not-allowed}
+  .nbtn.go{background:var(--teal);color:var(--on-accent);border-color:var(--teal)}
+  .veil2{position:fixed;inset:0;z-index:40;background:var(--veil);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:40px 16px}
+  .veil2.show{display:flex}
+  .card{max-width:500px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .card-top{padding:26px 26px 20px;border-bottom:1px solid var(--line)}
+  .ro{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .score-big{font-size:54px;font-weight:720;letter-spacing:-1px;line-height:1;margin:10px 0 6px;font-variant-numeric:tabular-nums}
+  .status-line{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;border-radius:6px}
+  .status-line.pass{color:var(--ok);background:rgba(57,179,162,.12);border:1px solid rgba(57,179,162,.4)}
+  .status-line.fail{color:var(--no);background:rgba(224,104,122,.12);border:1px solid rgba(224,104,122,.4)}
+  .card-body{padding:20px 26px}
+  .stat{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:1px;padding:7px 0;border-bottom:1px dashed var(--line);color:var(--muted)}
+  .stat b{color:var(--text)}
+  .card-foot{padding:16px 26px 24px;display:flex;gap:10px}
+  .card-foot button{flex:1;border-radius:8px;padding:11px;font-size:14px;font-weight:600;font-family:var(--sans);border:1px solid var(--line-2);background:transparent;color:var(--text)}
+  .card-foot button.go{background:var(--teal);color:var(--on-accent);border-color:var(--teal)}
+  .lb{position:fixed;inset:0;z-index:50;background:var(--lb-bg);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+  .lb.show{display:flex}.lb img{max-width:100%;max-height:100%;border-radius:8px;border:1px solid var(--line)}
+  .lb-x{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel);color:var(--text);cursor:pointer;font-size:15px}
+  .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .nbtn:focus-visible,.pdot:focus-visible,.chip:focus-visible,.sbtn:focus-visible,.chart:focus-visible,.card-foot button:focus-visible,.lb-x:focus-visible,.doc-link:focus-visible,.msel:focus-visible{outline:2px solid var(--teal-br);outline-offset:2px}
+  @media (max-width:560px){h1.page-h{font-size:20px}.score-big{font-size:44px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style id="theme">/*__THEME_CSS__*/</style>
+</head>
+<body>
+  <header class="top"><div class="top-in">
+    <svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="var(--teal)" stroke-width="6"/><path d="M50 20 L50 80 M30 34 L70 34 M38 50 L62 50" stroke="var(--teal-br)" stroke-width="6" stroke-linecap="round"/></svg>
+    <div class="ct" id="ctitle"></div>
+    <div class="conn"><span class="dot" id="dot"></span><span id="connTxt">Connecting…</span></div>
+  </div></header>
+  <main class="wrap" tabindex="-1"><div id="stage"></div></main>
+  <nav class="navbar" aria-label="Course navigation"><div class="navbar-in">
+    <button class="nbtn" id="prevBtn" aria-label="Previous page">Prev</button>
+    <div class="dots" id="dots"></div>
+    <button class="nbtn go" id="nextBtn">Next</button>
+  </div></nav>
+  <div id="live" class="sr" aria-live="polite"></div>
+  <div class="veil2" id="veil2"><div class="card" role="dialog" aria-modal="true" aria-label="Result">
+    <div class="card-top"><div class="ro">Result</div><div class="score-big" id="scoreWrap"><span id="scoreVal">0</span>%</div><div class="status-line" id="statusLine"></div></div>
+    <div class="card-body">
+      <div class="stat" id="rowCorrect"><span>Correct</span><b id="stCorrect">0 / 0</b></div>
+      <div class="stat"><span>Pass mark</span><b id="stPass">—</b></div>
+      <div class="stat" id="rowAtt" style="display:none"><span>Attempts</span><b id="stAtt">—</b></div>
+      <div class="stat"><span>Time on task</span><b id="stTime">—</b></div>
+      <div class="stat"><span>Reported to platform</span><b id="stRep">—</b></div>
+      <div class="qsum" id="qsum"></div>
+    </div>
+    <div class="card-foot"><button id="reviewFailBtn" style="display:none">Review the material</button><button id="reviewBtn">Review</button><button class="go" id="retakeBtn">Retake</button></div>
+  </div></div>
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image"><button class="lb-x" id="lbClose" aria-label="Close enlarged image">✕</button><img id="lbImg" alt="Reference image"></div>
+
+  <script id="DECK" type="application/json">__DECK_JSON__</script>
+  <script>
+  /* ---- inline SCORM wrapper, 1.2 + 2004. Walks frames/opener (max 500 hops)
+     for the packaged version's API object first (2004: API_1484_11, 1.2: API),
+     falls back to the other, then adapts every call and cmi key to whichever
+     dialect it actually bound. App code only uses the high-level methods. ---- */
+  var SCORM=(function(g,VER){
+    var names=VER==='2004'?['API_1484_11','API']:['API','API_1484_11'];
+    var api=null,is2004=VER==='2004',conn=false,fin=false,mem={};
+    function find(w,n){var t=0;while(w&&w[n]==null&&w.parent!=null&&w.parent!==w&&t<500){t++;w=w.parent;}return w?w[n]:null;}
+    function hunt(n){var f=null;try{if(g.parent&&g.parent!==g)f=find(g.parent,n);}catch(e){}if(!f){try{if(g.top)f=find(g.top,n);}catch(e){}}if(!f&&g.opener){try{f=find(g.opener,n);}catch(e){}}return f;}
+    function get(k){if(conn&&api){try{var v=is2004?api.GetValue(k):api.LMSGetValue(k);return v==null?"":String(v);}catch(e){return "";}}return mem[k]!=null?mem[k]:"";}
+    function set(k,v){if(conn&&api){try{return String(is2004?api.SetValue(k,String(v)):api.LMSSetValue(k,String(v)))==="true";}catch(e){return false;}}mem[k]=String(v);return true;}
+    function pad(n){return(n<10?'0':'')+n;}
+    /* 1.2 wants CMITimespan HH:MM:SS.cc — 2004 wants an ISO 8601 duration */
+    function dur(ms){var s=Math.floor(ms/1000);return is2004
+      ?'PT'+Math.floor(s/3600)+'H'+Math.floor((s%3600)/60)+'M'+(s%60)+'S'
+      :pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60)+'.00';}
+    return{connected:function(){return conn;},
+      init:function(){
+        for(var i=0;i<names.length&&!api;i++){api=hunt(names[i]);if(api)is2004=names[i]==='API_1484_11';}
+        if(!api){conn=false;return false;}
+        conn=true;try{is2004?api.Initialize(""):api.LMSInitialize("");}catch(e){}return true;},
+      /* fresh attempt (2004 boots with completion_status "unknown", 1.2 with "not attempted") → incomplete */
+      beginAttempt:function(){var k=is2004?'cmi.completion_status':'cmi.core.lesson_status';
+        var s=get(k);if(s===''||s==='not attempted'||s==='unknown')set(k,'incomplete');},
+      setIncomplete:function(){set(is2004?'cmi.completion_status':'cmi.core.lesson_status','incomplete');
+        if(is2004)set('cmi.success_status','unknown');},
+      getSuspend:function(){return get('cmi.suspend_data');},
+      setSuspend:function(v){return set('cmi.suspend_data',v);},
+      reportScore:function(raw,passed,ms){
+        if(is2004){set('cmi.score.raw',String(raw));set('cmi.score.min','0');set('cmi.score.max','100');
+          set('cmi.score.scaled',String(raw/100));
+          set('cmi.success_status',passed?'passed':'failed');set('cmi.completion_status','completed');
+          set('cmi.session_time',dur(ms));set('cmi.exit','normal');}
+        else{set('cmi.core.score.min','0');set('cmi.core.score.max','100');set('cmi.core.score.raw',String(raw));
+          set('cmi.core.lesson_status',passed?'passed':'failed');
+          set('cmi.core.session_time',dur(ms));set('cmi.core.exit','');}},
+      reportCompleted:function(ms){
+        if(is2004){set('cmi.completion_status','completed');set('cmi.session_time',dur(ms));set('cmi.exit','normal');}
+        else{set('cmi.core.lesson_status','completed');set('cmi.core.session_time',dur(ms));set('cmi.core.exit','');}},
+      suspendExit:function(ms){if(is2004){set('cmi.exit','suspend');set('cmi.session_time',dur(ms));}
+        else{set('cmi.core.exit','suspend');set('cmi.core.session_time',dur(ms));}},
+      commit:function(){if(conn&&api){try{return String(is2004?api.Commit(""):api.LMSCommit(""))==="true";}catch(e){return false;}}return true;},
+      finish:function(){if(fin)return true;fin=true;if(conn&&api){try{return String(is2004?api.Terminate(""):api.LMSFinish(""))==="true";}catch(e){return false;}}return true;}};
+  })(window,'__SCORM_VERSION__');
+
+  (function(){
+    "use strict";
+    var DECK=JSON.parse(document.getElementById('DECK').textContent);
+    var PASS=DECK.passMark;
+    var pages=DECK.pages;
+    var MAXATT=DECK.maxAttempts||0;
+    var SHUF=DECK.shuffle||{};
+    var RESTRICT=DECK.navMode==='restricted';
+    document.getElementById('ctitle').textContent=DECK.title;
+    document.getElementById('stPass').textContent=PASS+'%';
+    /* themed logo ships as a data URI inside the deck — swap the built-in SVG mark */
+    if(DECK.theme&&DECK.theme.logoDataUri){
+      var mk=document.querySelector('.mk');
+      if(mk){var im=document.createElement('img');im.className='mk';im.alt='';im.src=DECK.theme.logoDataUri;mk.parentNode.replaceChild(im,mk);}
+    }
+
+    var cur=0, submitted=false, startMs=Date.now(), commitTimer=null, lastReportOk=null;
+    var answers={}, watched={}, attempts=0, SEED=0;
+    /* answers stay in CANONICAL question/option index space regardless of any
+       shuffle/draw — grading, restore guards and size estimates never depend
+       on presentation order. Undrawn questions simply keep null slots. */
+    pages.forEach(function(p,i){ if(p.quiz&&p.quiz.questions){ answers[i]=new Array(p.quiz.questions.length).fill(null);} });
+
+    /* boot + restore */
+    var live=SCORM.init();
+    var dot=document.getElementById('dot'), connTxt=document.getElementById('connTxt');
+    if(live){dot.className='dot live';connTxt.textContent='Platform connected';
+      SCORM.beginAttempt();
+    }else{dot.className='dot prev';connTxt.textContent='Preview mode';}
+    var restored=false;
+    try{var raw=SCORM.getSuspend();if(raw){var st=JSON.parse(raw);
+      if(typeof st.sd==='number'&&isFinite(st.sd))SEED=st.sd|0;
+      if(typeof st.at==='number'&&st.at>0)attempts=Math.floor(st.at);
+      if(st.a)Object.keys(st.a).forEach(function(k){if(answers[k]&&st.a[k].length===answers[k].length){
+        answers[k]=st.a[k].map(function(s,qi){return sanitizeSlot(pages[k].quiz.questions[qi],s);});
+      }});
+      if(st.w)watched=st.w; submitted=!!st.sub; if(typeof st.cp==='number'&&st.cp>=0&&st.cp<pages.length)cur=st.cp;
+      restored=true;
+    }}catch(e){}
+    /* the seed is the sole randomness source (shuffles, draws, SEQ/MAT layouts);
+       persisting it is what makes resume deterministic */
+    if(!SEED)SEED=((Math.random()*0x7fffffff)|0)||1;
+
+    var VM=buildVM();
+    var totalQ=countQ();
+    /* a deck edited between sessions (or flipped to restricted) must not resume past the gate */
+    if(RESTRICT&&!submitted)cur=Math.min(cur,maxReach());
+    if(live&&!restored)persist(); // seed must survive an instant close
+
+    var LET=['A','B','C','D','E','F'];
+    var stage=document.getElementById('stage');
+    var mainEl=document.querySelector('main.wrap');
+    var liveEl=document.getElementById('live'), lastAnnounced=-1;
+    function announce(msg){if(liveEl)liveEl.textContent=msg;}
+
+    function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+    function norm(s){return String(s).toLowerCase().replace(/\s+/g,' ').replace(/^ +| +$/g,'');}
+
+    function mulberry32(s){return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    /* tag = page*1024 + q*8 + purpose (0 draw · 1 q-order · 2 opt-order · 3 seq-init · 4 mat-right) */
+    function shuf(arr,tag){var r=mulberry32(SEED^tag),a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+    function sameArr(a,b){if(a.length!==b.length)return false;for(var i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true;}
+
+    /* the view model: which canonical questions each page presents (after
+       draw/banks + question shuffle) and each question's display order for
+       options / MAT right column / SEQ starting arrangement */
+    function buildVM(){
+      var vm={qs:[],oo:[]};
+      pages.forEach(function(p,pi){
+        if(!(p.quiz&&p.quiz.questions)){vm.qs.push([]);vm.oo.push([]);return;}
+        var qz=p.quiz, qs=qz.questions;
+        var idxs=qs.map(function(_,i){return i;});
+        if(qz.bd&&qz.bd.length){
+          var chosen=[], byBank={};
+          idxs.forEach(function(i){var b=qs[i].b;if(b===undefined||b===null)chosen.push(i);else (byBank[b]=byBank[b]||[]).push(i);});
+          Object.keys(byBank).forEach(function(b){
+            var pool=byBank[b];
+            var want=qz.bd[+b]!=null?qz.bd[+b]:1;
+            chosen=chosen.concat(want>=pool.length?pool:shuf(pool,pi*1024+(+b)*8).slice(0,want));
+          });
+          chosen.sort(function(a,b){return a-b;});
+          idxs=chosen;
+        } else if(qz.draw&&qz.draw>=1&&qz.draw<idxs.length){
+          idxs=shuf(idxs,pi*1024).slice(0,qz.draw).sort(function(a,b){return a-b;});
+        }
+        if(SHUF.q&&idxs.length>1)idxs=shuf(idxs,pi*1024+1);
+        vm.qs.push(idxs);
+        var oo=[];
+        qs.forEach(function(item,qi){
+          var ord=item.o.map(function(_,i){return i;});
+          if(item.t==='MAT'){
+            /* rights always display shuffled — the aligned order would put every
+               correct match on the diagonal */
+            ord=shuf(ord,pi*1024+qi*8+4);
+            if(ord.length>1&&sameArr(ord,item.o.map(function(_,i){return i;})))ord.push(ord.shift());
+          } else if(item.t==='SEQ'){
+            /* never start in the correct order — the question would be pre-solved */
+            ord=shuf(ord,pi*1024+qi*8+3);
+            if(sameArr(ord,item.c))ord.push(ord.shift());
+          } else if(item.t==='MCQ'||item.t==='MCA'){
+            var want=item.sh===1||(SHUF.o&&item.sh!==0); /* TF never shuffles */
+            if(want&&ord.length>1){
+              var pin=[],rest=[];
+              item.o.forEach(function(txt,i){(/\b(all|none) of the (above|these)\b/i.test(txt)?pin:rest).push(i);});
+              ord=shuf(rest,pi*1024+qi*8+2).concat(pin);
+            }
+          }
+          oo.push(ord);
+        });
+        vm.oo.push(oo);
+      });
+      return vm;
+    }
+    function countQ(){var s=0;VM.qs.forEach(function(a){s+=a.length;});return s;}
+
+    /* restore guard: a slot whose shape no longer matches its question type
+       (deck edited between sessions) degrades to null — never to a wrong grade */
+    function sanitizeSlot(item,s){
+      if(s===null||s===undefined)return null;
+      var t=item.t;
+      if(t==='FIB')return typeof s==='string'&&s?s:null;
+      if(t==='NUM')return typeof s==='number'&&isFinite(s)?s:null;
+      if(t==='MAT')return Array.isArray(s)&&s.length===item.o.length&&s.every(function(x){return x===-1||(typeof x==='number'&&x>=0&&x<item.o.length);})?s:null;
+      if(t==='SEQ')return Array.isArray(s)&&s.length===item.o.length&&s.every(function(x){return typeof x==='number'&&x>=0&&x<item.o.length;})?s:null;
+      if(t==='MCA')return Array.isArray(s)&&s.length>0&&s.every(function(x){return typeof x==='number'&&x>=0&&x<item.o.length;})?s:null;
+      return typeof s==='number'&&s>=0&&s<item.o.length?s:null;
+    }
+
+    function isAnswered(item,s){
+      if(s===null||s===undefined)return false;
+      if(item.t==='MAT')return Array.isArray(s)&&s.indexOf(-1)<0;
+      return true;
+    }
+
+    function renderChoice(item,qi,chosen){
+      var multi=item.t==='MCA';
+      var ord=VM.oo[cur][qi];
+      var opts=ord.map(function(oi,pos){
+        var opt=item.o[oi];
+        var picked=multi?(Array.isArray(chosen)&&chosen.indexOf(oi)>=0):(chosen===oi);
+        var extra='';
+        if(submitted){ if(item.c.indexOf(oi)>=0)extra=' correct'; else if(picked)extra=' wrong'; }
+        return '<li class="opt'+extra+'"><input type="'+(multi?'checkbox':'radio')+'" id="p'+cur+'q'+qi+'o'+oi+'" name="p'+cur+'q'+qi+'" value="'+oi+'" '+(picked?'checked':'')+(submitted?' disabled':'')+'>'+
+          '<label for="p'+cur+'q'+qi+'o'+oi+'"><span class="box">'+LET[pos]+'</span><span>'+esc(opt)+'</span></label></li>';
+      }).join('');
+      var verdict='';
+      if(submitted){
+        var letters=item.c.map(function(ci){return LET[ord.indexOf(ci)];}).sort().join(', ');
+        verdict=isCorrect(item,chosen)?'✓ Correct':'✗ Incorrect · answer: '+letters;
+      }
+      return {note:multi?'Select all that apply':'', body:'<ul class="opts">'+opts+'</ul>', verdict:verdict};
+    }
+
+    function renderTyped(item,qi,chosen){
+      var isNum=item.t==='NUM';
+      var val=chosen===null||chosen===undefined?'':String(chosen);
+      var body='<input type="'+(isNum?'number':'text')+'"'+(isNum?' step="any"':' maxlength="80"')+' class="tin" data-p="'+cur+'" data-q="'+qi+'" value="'+esc(val)+'"'+(submitted?' disabled':'')+' placeholder="'+(isNum?'Enter a number':'Type your answer')+'">';
+      var verdict='';
+      if(submitted){
+        var want=isNum?(item.num.v+(item.num.tol?' ± '+item.num.tol:'')):item.a[0];
+        verdict=isCorrect(item,chosen)?'✓ Correct':'✗ Incorrect · answer: '+esc(String(want));
+      }
+      return {note:'', body:body, verdict:verdict};
+    }
+
+    function renderMatch(item,qi,chosen){
+      var ord=VM.oo[cur][qi];
+      var slot=Array.isArray(chosen)?chosen:item.o.map(function(){return -1;});
+      var rows=item.o.map(function(left,li){
+        var opts='<option value="-1"'+(slot[li]===-1?' selected':'')+'>— choose —</option>'+
+          ord.map(function(ri){return '<option value="'+ri+'"'+(slot[li]===ri?' selected':'')+'>'+esc(item.m[ri])+'</option>';}).join('');
+        var cls='mrow', note='';
+        if(submitted){
+          var ok=slot[li]>=0&&norm(item.m[slot[li]])===norm(item.m[li]);
+          cls+=ok?' ok':' bad';
+          if(!ok)note='<div class="mans">Correct: '+esc(item.m[li])+'</div>';
+        }
+        return '<div class="'+cls+'"><span class="mleft">'+esc(left)+'</span><select class="msel" data-p="'+cur+'" data-q="'+qi+'" data-i="'+li+'"'+(submitted?' disabled':'')+'>'+opts+'</select>'+note+'</div>';
+      }).join('');
+      return {note:'Match each item', body:rows, verdict:submitted?(isCorrect(item,chosen)?'✓ Correct':'✗ Incorrect'):''};
+    }
+
+    function renderSeq(item,qi,chosen){
+      var order=Array.isArray(chosen)?chosen:VM.oo[cur][qi];
+      var rows=order.map(function(oi,k){
+        var cls='srow';
+        if(submitted)cls+=(Array.isArray(chosen)&&chosen[k]===item.c[k])?' ok':' bad';
+        return '<div class="'+cls+'"><span class="snum">'+(k+1)+'</span><span class="stxt">'+esc(item.o[oi])+'</span>'+
+          (submitted?'':'<span class="sbtns">'+
+            '<button type="button" class="sbtn" data-p="'+cur+'" data-q="'+qi+'" data-k="'+k+'" data-dir="-1"'+(k===0?' disabled':'')+'>▲</button>'+
+            '<button type="button" class="sbtn" data-p="'+cur+'" data-q="'+qi+'" data-k="'+k+'" data-dir="1"'+(k===order.length-1?' disabled':'')+'>▼</button></span>')+
+          '</div>';
+      }).join('');
+      var body=rows;
+      if(submitted&&!isCorrect(item,chosen)){
+        body+='<div class="sans">Correct order: '+item.c.map(function(ci){return esc(item.o[ci]);}).join(' → ')+'</div>';
+      }
+      return {note:'Arrange in the correct order using the arrows', body:body, verdict:submitted?(isCorrect(item,chosen)?'✓ Correct':'✗ Incorrect'):''};
+    }
+
+    /* content blocks: static markup per render; interaction only toggles DOM
+       attributes — NEVER render() (would scroll-to-top and rebuild the quiz DOM)
+       and NEVER persist() (blocks are presentation-only; suspend stays untouched).
+       All bodyHtml fields were sanitized at deck build (rich.ts). */
+    function renderBlocks(list){
+      var h='';
+      list.forEach(function(b,bi){
+        var id=function(s,k){return 'bk'+bi+s+k;};
+        if(b.kind==='accordion'){
+          h+='<div class="blk">'+b.items.map(function(it,k){
+            return '<div class="acc-it"><h3 class="acc-h"><button type="button" class="acc-btn" data-blk="acc" id="'+id('h',k)+'" aria-expanded="false" aria-controls="'+id('p',k)+'"><span>'+esc(it.title)+'</span><span class="acc-ic" aria-hidden="true">+</span></button></h3>'+
+              '<div class="acc-p" id="'+id('p',k)+'" role="region" aria-labelledby="'+id('h',k)+'" hidden><div class="blk-body">'+it.bodyHtml+'</div></div></div>';
+          }).join('')+'</div>';
+        }else if(b.kind==='tabs'){
+          h+='<div class="blk"><div class="tab-bar" role="tablist">'+b.items.map(function(it,k){
+            return '<button type="button" class="tab-btn" data-blk="tab" role="tab" id="'+id('t',k)+'" aria-selected="'+(k===0)+'" tabindex="'+(k===0?0:-1)+'" aria-controls="'+id('tp',k)+'">'+esc(it.title)+'</button>';
+          }).join('')+'</div>'+b.items.map(function(it,k){
+            return '<div role="tabpanel" id="'+id('tp',k)+'" aria-labelledby="'+id('t',k)+'" tabindex="0"'+(k?' hidden':'')+'><div class="blk-body">'+it.bodyHtml+'</div></div>';
+          }).join('')+'</div>';
+        }else if(b.kind==='flashcards'){
+          h+='<div class="blk"><div class="cards-grid">'+b.cards.map(function(c){
+            return '<button type="button" class="card-f" data-blk="card" aria-pressed="false">'+
+              '<span class="cf-side"><span class="blk-body">'+c.frontHtml+'</span><span class="card-hint">Tap to flip</span></span>'+
+              '<span class="cf-side" hidden><span class="blk-body">'+c.backHtml+'</span></span></button>';
+          }).join('')+'</div></div>';
+        }else if(b.kind==='reveal'){
+          h+='<div class="blk"><button type="button" class="rev-btn" data-blk="acc" aria-expanded="false" aria-controls="'+id('r',0)+'">'+esc(b.prompt)+'</button>'+
+            '<div class="rev-p" id="'+id('r',0)+'" hidden><div class="blk-body">'+b.bodyHtml+'</div></div></div>';
+        }else if(b.kind==='timeline'){
+          h+='<div class="blk tl">'+b.items.map(function(it){
+            return '<div class="tl-it">'+(it.label?'<div class="tl-lab">'+esc(it.label)+'</div>':'')+
+              (it.title?'<h3 class="tl-t">'+esc(it.title)+'</h3>':'')+'<div class="blk-body">'+it.bodyHtml+'</div></div>';
+          }).join('')+'</div>';
+        }else if(b.kind==='hotspots'){
+          h+='<div class="blk hs"><div class="hs-fig"><img src="'+esc(b.image.src)+'" alt="">'+
+            b.spots.map(function(s,k){
+              return '<button type="button" class="hs-dot" data-blk="spot" style="left:'+(+s.x||0)+'%;top:'+(+s.y||0)+'%" aria-expanded="false" aria-controls="'+id('s',k)+'" aria-label="'+esc(s.title||('Marker '+(k+1)))+'">'+(k+1)+'</button>';
+            }).join('')+'</div>'+
+            b.spots.map(function(s,k){
+              return '<div class="hs-panel" id="'+id('s',k)+'" role="region" aria-label="'+esc(s.title||('Marker '+(k+1)))+'" hidden>'+
+                (s.title?'<h3 class="hs-t">'+esc(s.title)+'</h3>':'')+'<div class="blk-body">'+s.bodyHtml+'</div></div>';
+            }).join('')+'</div>';
+        }
+      });
+      return h;
+    }
+
+    function render(){
+      var p=pages[cur];
+      var h='';
+      h+='<div class="eyebrow">Page '+(cur+1)+' of '+pages.length+'</div>';
+      if(p.title)h+='<h1 class="page-h">'+esc(p.title)+'</h1>';
+      /* bodyHtml is renderer-produced safe HTML (sanitized at build time in rich.ts) */
+      if(p.bodyHtml)h+='<div class="body-txt">'+p.bodyHtml+'</div>';
+      if(p.blocks&&p.blocks.length)h+=renderBlocks(p.blocks);
+      /* watched[i] is a per-page bitmask: video=1, audio=2, doc=4 (legacy w[i]=1 = video done) */
+      var wb=watched[cur]|0;
+      if(p.video)h+='<div class="vid-hero"><video id="vid" controls controlslist="nodownload" disablepictureinpicture preload="auto" playsinline src="'+esc(p.video.src)+'">'+
+        (p.video.captions?'<track kind="captions" src="'+esc(p.video.captions)+'" srclang="en" label="Captions" default>':'')+
+        '</video></div>'+
+        '<div class="watched'+((wb&1)?' done':'')+'" id="watched"><span aria-hidden="true">◍</span><span id="wtxt">'+((wb&1)?'Viewed':'Not yet viewed')+'</span></div>';
+      if(p.image)h+='<button class="chart" id="chartBtn" aria-label="Enlarge image"><img src="'+esc(p.image.src)+'" alt="Reference image"></button><div class="chart-cap">Tap to enlarge</div>';
+      if(p.audio)h+='<audio id="aud" controls preload="auto" src="'+esc(p.audio.src)+'"></audio>'+
+        '<div class="watched'+((wb&2)?' done':'')+'" id="awatched"><span aria-hidden="true">♫</span><span id="awtxt">'+((wb&2)?'Listened':'Not yet listened')+'</span></div>';
+      if(p.doc)h+='<iframe class="doc" src="'+esc(p.doc.src)+'" title="Document"></iframe>'+
+        '<div class="doc-row"><a class="doc-link" href="'+esc(p.doc.src)+'" target="_blank" rel="noopener">Open / download '+esc(p.doc.name||'document')+' <span aria-hidden="true">⤓</span></a></div>';
+      if(p.quiz&&p.quiz.questions){
+        VM.qs[cur].forEach(function(qi){
+          var item=p.quiz.questions[qi];
+          var chosen=answers[cur][qi];
+          var rev=submitted?' rev':''; var vv='';
+          if(submitted){ vv=isCorrect(item,chosen)?'right':'bad'; }
+          var r;
+          if(item.t==='FIB'||item.t==='NUM')r=renderTyped(item,qi,chosen);
+          else if(item.t==='MAT')r=renderMatch(item,qi,chosen);
+          else if(item.t==='SEQ')r=renderSeq(item,qi,chosen);
+          else r=renderChoice(item,qi,chosen);
+          var fbTxt='';
+          if(submitted){fbTxt=isCorrect(item,chosen)?(item.fbc||item.fb||''):(item.fbi||item.fb||'');}
+          h+='<div class="q'+rev+' '+vv+'"><div class="q-top"><span class="q-idx">Q'+esc(item.n)+'</span><span class="q-text">'+esc(item.q)+'</span></div>'+
+             (r.note?'<div class="q-note">'+r.note+'</div>':'')+
+             r.body+'<div class="verdict">'+r.verdict+'</div>'+
+             (fbTxt?'<div class="fb">'+esc(fbTxt)+'</div>':'')+'</div>';
+        });
+      }
+      stage.innerHTML=h;
+      window.scrollTo(0,0);
+
+      var vid=document.getElementById('vid');
+      if(vid){
+        /* innerHTML-injected video won't reliably start fetching on its own —
+           an explicit load() is what prevents the blank player on first render */
+        try{vid.load();}catch(e){}
+        /* deter saving the file: controlslist="nodownload" strips Chromium's download
+           button; blocking the context menu removes "Save video as…" (Firefox keeps
+           no download button, only that menu). Deterrence — not DRM. */
+        vid.addEventListener('contextmenu',function(e){e.preventDefault();});
+        var mark=function(){watched[cur]=(watched[cur]|0)|1;var w=document.getElementById('watched');if(w){w.classList.add('done');document.getElementById('wtxt').textContent='Viewed';}persist();renderNav();};
+        vid.addEventListener('ended',mark);
+        vid.addEventListener('timeupdate',function(){if(!((watched[cur]|0)&1)&&vid.duration&&vid.currentTime/vid.duration>0.95)mark();});
+      }
+      var aud=document.getElementById('aud');
+      if(aud){
+        /* narration gates completion exactly like video: 95% or ended */
+        try{aud.load();}catch(e){}
+        var amark=function(){watched[cur]=(watched[cur]|0)|2;var w=document.getElementById('awatched');if(w){w.classList.add('done');document.getElementById('awtxt').textContent='Listened';}persist();renderNav();};
+        aud.addEventListener('ended',amark);
+        aud.addEventListener('timeupdate',function(){if(!((watched[cur]|0)&2)&&aud.duration&&aud.currentTime/aud.duration>0.95)amark();});
+      }
+      /* a PDF has no reliable "read" signal — visiting the page marks it viewed */
+      if(p.doc&&!((watched[cur]|0)&4)){watched[cur]=(watched[cur]|0)|4;persist();}
+      var cb=document.getElementById('chartBtn');
+      if(cb)cb.addEventListener('click',function(){
+        var im=document.getElementById('lbImg');im.src=p.image.src;
+        document.getElementById('lb').classList.add('show');
+        lbOpener=cb;document.getElementById('lbClose').focus();
+      });
+
+      if(cur!==lastAnnounced){lastAnnounced=cur;announce('Page '+(cur+1)+' of '+pages.length+(p.title?': '+p.title:''));}
+      renderNav();
+    }
+
+    /* answers[page][q] slots by type: MCQ/TF int · MCA sorted int[] · FIB string ·
+       NUM number · MAT int[] (-1 = unset) · SEQ permutation int[] — all canonical.
+       Grading is all-or-nothing per question for every type. */
+    function isCorrect(item,ans){
+      if(!isAnswered(item,ans))return false;
+      if(item.t==='FIB'){
+        var v=norm(ans), a=item.a||[];
+        for(var i=0;i<a.length;i++)if(norm(a[i])===v)return true;
+        return false;
+      }
+      if(item.t==='NUM')return typeof ans==='number'&&!!item.num&&Math.abs(ans-item.num.v)<=item.num.tol+1e-9;
+      if(item.t==='MAT'){
+        for(var j=0;j<item.o.length;j++){ if(ans[j]<0||norm(item.m[ans[j]])!==norm(item.m[j]))return false; }
+        return true;
+      }
+      if(item.t==='SEQ'){
+        if(!Array.isArray(ans)||ans.length!==item.c.length)return false;
+        for(var k=0;k<ans.length;k++)if(ans[k]!==item.c[k])return false;
+        return true;
+      }
+      if(item.t==='MCA'){
+        if(!Array.isArray(ans)||ans.length!==item.c.length)return false;
+        for(var m2=0;m2<ans.length;m2++){ if(item.c.indexOf(ans[m2])<0)return false; }
+        return true;
+      }
+      return ans===item.c[0];
+    }
+
+    stage.addEventListener('change',function(e){
+      if(submitted)return;
+      var t=e.target;
+      if(t.tagName==='SELECT'&&t.getAttribute('data-p')!=null){
+        var spi=parseInt(t.getAttribute('data-p'),10), sqi=parseInt(t.getAttribute('data-q'),10), li=parseInt(t.getAttribute('data-i'),10);
+        var sit=pages[spi].quiz.questions[sqi];
+        var arr2=Array.isArray(answers[spi][sqi])?answers[spi][sqi].slice():sit.o.map(function(){return -1;});
+        arr2[li]=parseInt(t.value,10);
+        var allUnset=true;for(var u=0;u<arr2.length;u++)if(arr2[u]!==-1)allUnset=false;
+        answers[spi][sqi]=allUnset?null:arr2;
+        persist(); renderNav(); return;
+      }
+      var m=t.name&&t.name.match(/^p(\d+)q(\d+)$/);
+      if(!m)return;
+      var pi=parseInt(m[1],10), qi=parseInt(m[2],10), v=parseInt(t.value,10);
+      var item=pages[pi].quiz.questions[qi];
+      if(item.t==='MCA'){
+        var arr=Array.isArray(answers[pi][qi])?answers[pi][qi].slice():[];
+        var ix=arr.indexOf(v);
+        if(t.checked){ if(ix<0)arr.push(v); }
+        else if(ix>=0)arr.splice(ix,1);
+        arr.sort(function(a,b){return a-b;});
+        answers[pi][qi]=arr.length?arr:null;
+      } else {
+        answers[pi][qi]=v;
+      }
+      persist(); renderNav();
+    });
+
+    /* FIB/NUM typed inputs — `input`, not `change`, so Finish-gating tracks keystrokes */
+    stage.addEventListener('input',function(e){
+      if(submitted)return;
+      var t=e.target;
+      if(!t.classList||!t.classList.contains('tin'))return;
+      var pi=parseInt(t.getAttribute('data-p'),10), qi=parseInt(t.getAttribute('data-q'),10);
+      var item=pages[pi].quiz.questions[qi];
+      if(item.t==='NUM'){ var v=parseFloat(t.value); answers[pi][qi]=isFinite(v)?v:null; }
+      else{ answers[pi][qi]=t.value.replace(/^\s+|\s+$/g,'')?t.value:null; }
+      persist(); renderNav();
+    });
+
+    /* SEQ ▲/▼ — the first move materializes the arrangement as the answer */
+    stage.addEventListener('click',function(e){
+      if(submitted)return;
+      var b=e.target&&e.target.closest?e.target.closest('.sbtn'):null;
+      if(!b||b.disabled)return;
+      var pi=parseInt(b.getAttribute('data-p'),10), qi=parseInt(b.getAttribute('data-q'),10);
+      var k=parseInt(b.getAttribute('data-k'),10), dir=parseInt(b.getAttribute('data-dir'),10);
+      var arr=Array.isArray(answers[pi][qi])?answers[pi][qi].slice():VM.oo[pi][qi].slice();
+      var j=k+dir; if(j<0||j>=arr.length)return;
+      var tmp=arr[k];arr[k]=arr[j];arr[j]=tmp;
+      answers[pi][qi]=arr;
+      persist(); render();
+    });
+
+    /* content blocks: attribute toggles only. Deliberately NOT gated on
+       `submitted` (blocks stay interactive in review) and never render()/persist(). */
+    function selectTab(btn){
+      var bar=btn.closest('[role="tablist"]'),ts=bar.querySelectorAll('[role="tab"]');
+      for(var i=0;i<ts.length;i++){
+        var on=ts[i]===btn;
+        ts[i].setAttribute('aria-selected',on?'true':'false');
+        ts[i].setAttribute('tabindex',on?'0':'-1');
+        var pn=document.getElementById(ts[i].getAttribute('aria-controls'));
+        if(pn){if(on)pn.removeAttribute('hidden');else pn.setAttribute('hidden','');}
+      }
+      btn.focus();
+    }
+    stage.addEventListener('click',function(e){
+      var b=e.target&&e.target.closest?e.target.closest('[data-blk]'):null;
+      if(!b)return;
+      var t=b.getAttribute('data-blk');
+      if(t==='acc'){ /* accordion headers + the reveal button share one toggle */
+        var open=b.getAttribute('aria-expanded')==='true';
+        b.setAttribute('aria-expanded',open?'false':'true');
+        var p1=document.getElementById(b.getAttribute('aria-controls'));
+        if(p1){if(open)p1.setAttribute('hidden','');else p1.removeAttribute('hidden');}
+      }else if(t==='tab'){
+        selectTab(b);
+      }else if(t==='card'){
+        var on=b.getAttribute('aria-pressed')==='true';
+        b.setAttribute('aria-pressed',on?'false':'true');
+        var sides=b.querySelectorAll('.cf-side');
+        if(on){sides[0].removeAttribute('hidden');sides[1].setAttribute('hidden','');}
+        else{sides[0].setAttribute('hidden','');sides[1].removeAttribute('hidden');}
+      }else if(t==='spot'){ /* one open panel per hotspot figure */
+        var was=b.getAttribute('aria-expanded')==='true';
+        var hs=b.closest('.hs');
+        var dotsIn=hs.querySelectorAll('.hs-dot'),panels=hs.querySelectorAll('.hs-panel');
+        for(var i2=0;i2<dotsIn.length;i2++)dotsIn[i2].setAttribute('aria-expanded','false');
+        for(var j2=0;j2<panels.length;j2++)panels[j2].setAttribute('hidden','');
+        if(!was){
+          b.setAttribute('aria-expanded','true');
+          var pn2=document.getElementById(b.getAttribute('aria-controls'));
+          if(pn2)pn2.removeAttribute('hidden');
+        }
+      }
+    });
+    /* roving tabindex + arrow keys on tab bars (selection follows focus) */
+    stage.addEventListener('keydown',function(e){
+      var t=e.target;
+      if(!t||!t.getAttribute||t.getAttribute('role')!=='tab')return;
+      var ts=[].slice.call(t.closest('[role="tablist"]').querySelectorAll('[role="tab"]'));
+      var i=ts.indexOf(t),j=-1;
+      if(e.key==='ArrowRight')j=(i+1)%ts.length;
+      else if(e.key==='ArrowLeft')j=(i-1+ts.length)%ts.length;
+      else if(e.key==='Home')j=0;
+      else if(e.key==='End')j=ts.length-1;
+      if(j<0)return;
+      e.preventDefault();selectTab(ts[j]);
+    });
+
+    function answeredAll(){
+      return pages.every(function(p,i){
+        if(!(p.quiz&&p.quiz.questions))return true;
+        return VM.qs[i].every(function(qi){return isAnswered(p.quiz.questions[qi],answers[i][qi]);});
+      });
+    }
+    function pageDone(i){
+      var p=pages[i];
+      if(p.quiz&&p.quiz.questions)return VM.qs[i].every(function(qi){return isAnswered(p.quiz.questions[qi],answers[i][qi]);});
+      var req=(p.video?1:0)|(p.audio?2:0)|(p.doc?4:0);
+      if(req)return ((watched[i]|0)&req)===req;
+      return true;
+    }
+    /* restricted navigation: FULL readiness — media consumed AND questions
+       answered. Stricter than pageDone, whose quiz-branch-wins semantics keep
+       driving the dot coloring. (True skip-logic branching is deliberately not
+       supported: this player is one SCO scored over every question.) */
+    function pageReady(i){
+      var p=pages[i];
+      var req=(p.video?1:0)|(p.audio?2:0)|(p.doc?4:0);
+      if(req&&((watched[i]|0)&req)!==req)return false;
+      if(p.quiz&&p.quiz.questions)return VM.qs[i].every(function(qi){return isAnswered(p.quiz.questions[qi],answers[i][qi]);});
+      return true;
+    }
+    /* first not-ready page — the learner may enter it but not pass it */
+    function maxReach(){var i=0;while(i<pages.length-1&&pageReady(i))i++;return i;}
+
+    var prevBtn=document.getElementById('prevBtn'),nextBtn=document.getElementById('nextBtn'),dots=document.getElementById('dots');
+    function renderNav(){
+      prevBtn.disabled=cur===0;
+      var last=cur===pages.length-1;
+      if(last){ nextBtn.textContent = totalQ>0 ? 'Finish course' : 'Complete';
+        nextBtn.disabled = totalQ>0 ? (!answeredAll()||submitted) : (submitted||(RESTRICT&&!pageReady(cur)));
+        nextBtn.classList.add('go');
+      } else { nextBtn.textContent='Next'; nextBtn.disabled=RESTRICT&&!submitted&&!pageReady(cur); }
+      /* after grading, navigation is free — review must be able to roam */
+      var reach=RESTRICT&&!submitted?maxReach():pages.length-1;
+      dots.innerHTML='';
+      pages.forEach(function(_p,i){
+        var b=document.createElement('button');
+        b.className='pdot'+(i===cur?' on':'')+(pageDone(i)?' done':'');
+        b.disabled=i>reach;
+        b.title=i>reach?'Complete previous pages first':'Page '+(i+1);
+        b.setAttribute('aria-label',i>reach?'Page '+(i+1)+' locked — complete previous pages first':'Go to page '+(i+1)+' of '+pages.length);
+        if(i===cur)b.setAttribute('aria-current','page');
+        b.addEventListener('click',function(){if(i>reach)return;cur=i;persist();render();});
+        dots.appendChild(b);
+      });
+    }
+    prevBtn.addEventListener('click',function(){if(cur>0){cur--;persist();render();}});
+    nextBtn.addEventListener('click',function(){
+      var last=cur===pages.length-1;
+      if(!last){
+        if(RESTRICT&&!submitted&&!pageReady(cur))return;
+        cur++;persist();render();return;
+      }
+      if(totalQ>0){ if(!answeredAll())return; grade(true); }
+      else { if(RESTRICT&&!pageReady(cur))return; finishComplete(); }
+    });
+
+    /* resume state: {a answers, w watched, sub submitted, cp page, sd seed,
+       at attempts} — short keys + canonical index arrays keeps this well under
+       the SCORM 1.2 ~4096-char suspend_data ceiling (2004 allows 64k). Feedback
+       and config are static deck content and are never stored here. */
+    function persist(){
+      var s={a:answers,w:watched,sub:submitted?1:0,cp:cur,sd:SEED};
+      if(attempts)s.at=attempts;
+      SCORM.setSuspend(JSON.stringify(s));
+      clearTimeout(commitTimer); commitTimer=setTimeout(function(){SCORM.commit();},700);
+    }
+    function pad(n){return(n<10?'0':'')+n;}
+    function humanTime(ms){var s=Math.floor(ms/1000),m=Math.floor(s/60);return m+'m '+pad(s%60)+'s';}
+
+    var retakeBtn=document.getElementById('retakeBtn');
+    function refreshAttempts(){
+      var row=document.getElementById('rowAtt');
+      if(MAXATT){row.style.display='';document.getElementById('stAtt').textContent=attempts+' / '+MAXATT;}
+      else row.style.display='none';
+      var spent=MAXATT&&attempts>=MAXATT;
+      retakeBtn.disabled=spent;
+      retakeBtn.textContent=spent?'No attempts left':'Retake';
+    }
+
+    /* grade(report): report=true sends score/status to the LMS; report=false
+       only rebuilds the results card (used when resuming an already-submitted attempt).
+       LMSFinish/Terminate is deliberately NOT called here — it happens once, on
+       unload — because SCORM ignores writes after finish (retake would go unreported). */
+    function grade(report){
+      var correct=0, chips='';
+      pages.forEach(function(p,i){ if(p.quiz&&p.quiz.questions){
+        VM.qs[i].forEach(function(qi){
+          var item=p.quiz.questions[qi];
+          var ok=isCorrect(item,answers[i][qi]);
+          if(ok)correct++;
+          chips+='<button type="button" class="chip '+(ok?'ok':'bad')+'" data-pg="'+i+'" aria-label="Question '+esc(item.n)+', '+(ok?'correct':'incorrect')+'. Go to its page">'+(pages.length>1?'P'+(i+1)+'·':'')+'Q'+esc(item.n)+' '+(ok?'✓':'✗')+'</button>';
+        });
+      }});
+      var rawScore=Math.round(correct/totalQ*100);
+      var pass=rawScore>=PASS;
+      submitted=true;
+      var rfb=document.getElementById('reviewFailBtn');
+      rfb.style.display=(!pass&&typeof DECK.onFailPage==='number'&&DECK.onFailPage>=0&&DECK.onFailPage<pages.length)?'':'none';
+      if(report){
+        attempts++;
+        SCORM.reportScore(rawScore,pass,Date.now()-startMs);
+        persist(); lastReportOk=SCORM.commit();
+        document.getElementById('stTime').textContent=humanTime(Date.now()-startMs);
+      } else {
+        document.getElementById('stTime').textContent='—';
+      }
+      document.getElementById('scoreVal').textContent=String(rawScore);
+      document.getElementById('stCorrect').textContent=correct+' / '+totalQ;
+      document.getElementById('qsum').innerHTML=chips;
+      refreshAttempts();
+      document.getElementById('stRep').textContent=live?(lastReportOk?'Yes':(report?'Attempted':'Previously')):'Preview — not sent';
+      var sl=document.getElementById('statusLine');sl.className='status-line '+(pass?'pass':'fail');
+      sl.innerHTML='<span aria-hidden="true">'+(pass?'▲':'▼')+'</span><span>'+(pass?'Passed':'Not passed')+'</span>';
+      announce('Score '+rawScore+' percent. '+(pass?'Passed.':'Not passed.'));
+      document.getElementById('veil2').classList.add('show');
+      render();
+      (retakeBtn.disabled?document.getElementById('reviewBtn'):retakeBtn).focus();
+    }
+    function finishComplete(){
+      submitted=true;
+      document.getElementById('reviewFailBtn').style.display='none';
+      SCORM.reportCompleted(Date.now()-startMs);
+      persist();lastReportOk=SCORM.commit();
+      document.getElementById('scoreWrap').style.display='none';
+      var sl=document.getElementById('statusLine');sl.className='status-line pass';sl.innerHTML='<span aria-hidden="true">▲</span><span>Completed</span>';
+      document.getElementById('rowCorrect').style.display='none';
+      document.getElementById('stTime').textContent=humanTime(Date.now()-startMs);
+      document.getElementById('stRep').textContent=live?(lastReportOk?'Yes':'Attempted'):'Preview — not sent';
+      announce('Course completed.');
+      document.getElementById('veil2').classList.add('show');
+      retakeBtn.focus();
+      renderNav();
+    }
+
+    /* capture the dialog elements at boot: handlers bound by an older document
+       (tests re-boot into the same document) must not act on a newer DOM */
+    var veilEl=document.getElementById('veil2');
+    function closeCard(){veilEl.classList.remove('show');if(mainEl)mainEl.focus();}
+    document.getElementById('reviewBtn').addEventListener('click',function(){closeCard();cur=0;render();});
+    /* post-fail remediation jump — submitted is true here, so restricted gating never blocks it */
+    document.getElementById('reviewFailBtn').addEventListener('click',function(){
+      closeCard();
+      cur=DECK.onFailPage;persist();render();
+    });
+    document.getElementById('qsum').addEventListener('click',function(e){
+      var b=e.target&&e.target.closest?e.target.closest('.chip'):null;
+      if(!b)return;
+      closeCard();
+      cur=parseInt(b.getAttribute('data-pg'),10);persist();render();
+    });
+    retakeBtn.addEventListener('click',function(){
+      if(MAXATT&&attempts>=MAXATT)return;
+      submitted=false;startMs=Date.now();watched={};lastReportOk=null;
+      /* fresh seed → fresh draw and shuffles for the new attempt */
+      SEED=((Math.random()*0x7fffffff)|0)||1;
+      VM=buildVM();totalQ=countQ();
+      pages.forEach(function(p,i){if(p.quiz&&p.quiz.questions)answers[i]=new Array(p.quiz.questions.length).fill(null);});
+      if(live)SCORM.setIncomplete();
+      document.getElementById('scoreWrap').style.display='';document.getElementById('rowCorrect').style.display='';
+      persist();SCORM.commit();document.getElementById('veil2').classList.remove('show');cur=0;render();
+    });
+    var lb=document.getElementById('lb'), lbOpener=null;
+    function closeLb(){
+      lb.classList.remove('show');
+      if(lbOpener){try{lbOpener.focus();}catch(e){}lbOpener=null;}
+    }
+    lb.addEventListener('click',closeLb); /* overlay, image or the ✕ — any click closes */
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){
+        if(lb.classList.contains('show')){closeLb();return;}
+        if(veilEl.classList.contains('show'))closeCard();
+        return;
+      }
+      /* minimal focus trap shared by both dialogs */
+      if(e.key!=='Tab')return;
+      var dlg=lb.classList.contains('show')?lb:(veilEl.classList.contains('show')?veilEl:null);
+      if(!dlg)return;
+      var f=[].filter.call(dlg.querySelectorAll('button:not([disabled]),a[href]'),function(el){return el.style.display!=='none';});
+      if(!f.length)return;
+      var first=f[0],lastEl=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();lastEl.focus();}
+      else if(!e.shiftKey&&document.activeElement===lastEl){e.preventDefault();first.focus();}
+    });
+    window.addEventListener('beforeunload',function(){
+      if(!submitted){SCORM.suspendExit(Date.now()-startMs);SCORM.commit();}
+      SCORM.finish();
+    });
+
+    render();
+    if(submitted&&totalQ>0)grade(false);
+  })();
+  </script>
+</body>
+</html>
