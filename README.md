@@ -1,4 +1,4 @@
-# SCORM Builder — Element Tree
+# SCORM Builder
 
 Browser-based authoring tool that turns pages of {video, image, audio, PDF, Excel quiz} into
 downloadable, spec-compliant **SCORM 1.2 or SCORM 2004 (4th Edition)** packages. Everything runs
